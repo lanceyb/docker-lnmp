@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  robot:
+    build: ./php
+    image: phpfpm:1
+    volumes:
+      - '${ROBOT_APP}:/www/robot'
+  pheme:
+    build: ./php
+    image: phpfpm:1
+    volumes:
+      - '${PHEME_APP}:/www/pheme'
+  nginx:
+    env_file: ./nginx/env_file
+    image: nginx:1.15.2
+    volumes:
+      - './nginx/conf.d:/etc/nginx/conf.d'
+      - '${ROBOT_APP}:/www/robot'
+      - '${PHEME_APP}:/www/pheme'
+    ports:
+      - "80:80"
+    links:
+      - 'robot'
+      - 'pheme'
